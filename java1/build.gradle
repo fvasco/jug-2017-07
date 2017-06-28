@@ -5,8 +5,8 @@ repositories {
 }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = '1.3'
+    targetCompatibility = '1.3'
 } 
     
 task wrapper(type: Wrapper) {
