@@ -1,33 +1,36 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+
+import static collectors.OccurrenceCountInMap.toOccurrenceCountInMap;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 
 public class Main {
 
-    public static void main(String... args) throws FileNotFoundException, IOException {
+    public static void main(String... args) throws IOException {
+        new Main().run();
+    }
+
+    private void run() throws IOException {
         final List<Integer> numbers =
                 Files.lines(FileSystems.getDefault().getPath("..", "source"))
                         .map(Integer::parseInt)
-                        .collect(Collectors.toList());
+                        .collect(toList());
 
-        final List<Integer> ordered = quicksort(numbers);
-
-        final Map<Integer, Integer> occurrences = new TreeMap<>();
-        ordered.forEach((i) -> {
-            final int count = 1 + occurrences.getOrDefault(i, 0);
-            occurrences.put(i, count);
-        });
-
-        occurrences.forEach((key, value) -> System.out.println(key + "=" + value));
+        System.out.println(quicksort(numbers).stream()
+                .collect(toOccurrenceCountInMap())
+                .entrySet()
+                .stream()
+                .map(e -> format("%d=%d", e.getKey(), e.getValue()))
+                .collect(joining("\n")));
     }
 
-    private static List<Integer> quicksort(final List<Integer> ints) {
+    private List<Integer> quicksort(final List<Integer> ints) {
         if (ints.size() < 2) return ints;
         final int pivot = ints.get(0);
         final List<Integer> unordered = ints.subList(1, ints.size());
@@ -46,4 +49,5 @@ public class Main {
         result.addAll(quicksort(high));
         return result;
     }
+
 }
