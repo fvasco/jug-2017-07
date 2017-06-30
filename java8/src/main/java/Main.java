@@ -3,6 +3,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import static collectors.OccurrenceCountInMap.toOccurrenceCountInMap;
 import static java.lang.String.format;
@@ -22,8 +23,12 @@ public class Main {
                         .map(Integer::parseInt)
                         .collect(toList());
 
-        System.out.println(quicksort(numbers).stream()
-                .collect(toOccurrenceCountInMap())
+        List<Integer> ordered = quicksort(numbers);
+
+        TreeMap<Integer, Integer> occurrences = ordered.stream()
+                .collect(toOccurrenceCountInMap());
+
+        System.out.println(occurrences
                 .entrySet()
                 .stream()
                 .map(e -> format("%d=%d", e.getKey(), e.getValue()))
