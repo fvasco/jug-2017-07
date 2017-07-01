@@ -14,13 +14,6 @@ QuickSort v(), 0, tot - 1
 CountOccurrences v(), tot, occ()
 PrintOccurrences occ()
 
-SUB CountOccurrences (v() AS INTEGER, t AS INTEGER, occ() AS INTEGER)
-  DIM i AS INTEGER
-  FOR i = 0 TO t - 1
-    occ(v(i)) = occ(v(i)) + 1
-  NEXT
-END SUB
-
 SUB LoadData (filename AS STRING, v() AS INTEGER, t AS INTEGER)
   f = FREEFILE
   OPEN filename FOR INPUT AS f
@@ -65,13 +58,6 @@ SUB Partition (v() AS INTEGER, low AS INTEGER, up AS INTEGER, j AS INTEGER, i AS
   END IF
 END SUB
 
-SUB PrintOccurrences (occ() AS INTEGER)
-  DIM i AS INTEGER
-  FOR i = LBOUND(occ) TO UBOUND(occ)
-    IF occ(i) > 0 THEN PRINT "N."; i, "OCCURRENCES ="; occ(i)
-  NEXT
-END SUB
-
 SUB QuickSort (v() AS INTEGER, low AS INTEGER, high AS INTEGER)
   DIM lower AS INTEGER
   DIM higher AS INTEGER
@@ -85,5 +71,19 @@ SUB QuickSort (v() AS INTEGER, low AS INTEGER, high AS INTEGER)
       QuickSort v(), low, lower
     END IF
   END IF
+END SUB
+
+SUB CountOccurrences (v() AS INTEGER, t AS INTEGER, occ() AS INTEGER)
+  DIM i AS INTEGER
+  FOR i = 0 TO t - 1
+    occ(v(i)) = occ(v(i)) + 1
+  NEXT
+END SUB
+
+SUB PrintOccurrences (occ() AS INTEGER)
+  DIM i AS INTEGER
+  FOR i = LBOUND(occ) TO UBOUND(occ)
+    IF occ(i) > 0 THEN PRINT "N."; i, "OCCURRENCES ="; occ(i)
+  NEXT
 END SUB
 
