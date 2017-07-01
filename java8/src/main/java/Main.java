@@ -3,7 +3,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static collectors.OccurrenceCountInMap.toOccurrenceCountInMap;
 import static java.lang.String.format;
@@ -13,19 +15,19 @@ import static java.util.stream.Collectors.toList;
 
 public class Main {
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws IOException, ExecutionException, InterruptedException {
         new Main().run();
     }
 
-    private void run() throws IOException {
+    private void run() throws IOException, ExecutionException, InterruptedException {
         final List<Integer> numbers =
                 Files.lines(FileSystems.getDefault().getPath("..", "source"))
                         .map(Integer::parseInt)
                         .collect(toList());
 
-        List<Integer> ordered = quicksort(numbers);
+        final List<Integer> ordered = quicksortAsync(numbers).get();
 
-        TreeMap<Integer, Integer> occurrences = ordered.stream()
+        final Map<Integer, Integer> occurrences = ordered.stream()
                 .collect(toOccurrenceCountInMap());
 
         System.out.println(occurrences
@@ -35,24 +37,24 @@ public class Main {
                 .collect(joining("\n")));
     }
 
-    private List<Integer> quicksort(final List<Integer> ints) {
-        if (ints.size() < 2) return ints;
+    private CompletableFuture<List<Integer>> quicksortAsync(final List<Integer> ints) {
+        if (ints.size() < 2) return CompletableFuture.completedFuture(ints);
+
         final int pivot = ints.get(0);
         final List<Integer> unordered = ints.subList(1, ints.size());
 
-        final List<Integer> low = new ArrayList<>(), high = new ArrayList<>();
-        for (final int i : unordered) {
-            if (i <= pivot)
-                low.add(i);
-            else
-                high.add(i);
-        }
+        final List<Integer> smaller = unordered.stream().filter((i) -> i <= pivot).collect(toList());
+        final CompletableFuture<List<Integer>> smallerFuture = quicksortAsync(smaller);
 
-        final List<Integer> result = new ArrayList<>(ints.size());
-        result.addAll(quicksort(low));
-        result.add(pivot);
-        result.addAll(quicksort(high));
-        return result;
+        final List<Integer> greater = unordered.stream().filter((i) -> i > pivot).collect(toList());
+        final CompletableFuture<List<Integer>> greaterFuture = quicksortAsync(greater);
+
+        return smallerFuture.thenCombineAsync(greaterFuture, (low, high) -> {
+            final List<Integer> result = new ArrayList<>(ints.size());
+            result.addAll(low);
+            result.add(pivot);
+            result.addAll(high);
+            return result;
+        });
     }
-
 }
