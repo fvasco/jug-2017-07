@@ -30,6 +30,7 @@ SUB LoadData (filename AS STRING, v() AS INTEGER, t AS INTEGER)
     v(t) = x
     t = t + 1
   LOOP
+  CLOSE f
 END SUB
 
 SUB Partition (v() AS INTEGER, low AS INTEGER, up AS INTEGER, j AS INTEGER, i AS INTEGER)
@@ -64,6 +65,13 @@ SUB Partition (v() AS INTEGER, low AS INTEGER, up AS INTEGER, j AS INTEGER, i AS
   END IF
 END SUB
 
+SUB PrintOccurrences (occ() AS INTEGER)
+  DIM i AS INTEGER
+  FOR i = LBOUND(occ) TO UBOUND(occ)
+    IF occ(i) > 0 THEN PRINT "N."; i, "OCCURRENCES ="; occ(i)
+  NEXT
+END SUB
+
 SUB QuickSort (v() AS INTEGER, low AS INTEGER, high AS INTEGER)
   DIM lower AS INTEGER
   DIM higher AS INTEGER
@@ -79,9 +87,3 @@ SUB QuickSort (v() AS INTEGER, low AS INTEGER, high AS INTEGER)
   END IF
 END SUB
 
-SUB PrintOccurrences (occ() AS INTEGER)
-  DIM i AS INTEGER
-  FOR i = LBOUND(occ) TO UBOUND(occ)
-    IF occ(i) > 0 THEN PRINT "N."; i, "OCCURRENCES ="; occ(i)
-  NEXT
-END SUB
