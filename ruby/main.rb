@@ -6,6 +6,6 @@ end
 
 numbers = File.readlines('../source').map(&:to_i)
 ordered = quicksort(numbers)
-occurrences = ordered.group_by(&:itself)
+occurrences = ordered.group_by(&:itself).map {|k, v| {k => v.size}}.reduce(:merge)
 
-puts occurrences.map {|k, v| "#{k}=#{v.size}"}
+puts occurrences.map {|n, o| "#{n}=#{o}"}
