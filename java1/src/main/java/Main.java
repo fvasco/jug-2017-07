@@ -1,26 +1,21 @@
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        BufferedReader sourceReader = new BufferedReader(new FileReader(new File("../source")));
+    public static void main(String[] args) throws IOException {
+        int[] numbers = loadFile("../source");
 
-        List numberVector = new Vector();
-        String line = sourceReader.readLine();
-        while (line != null) {
-            numberVector.add(line);
-            line = sourceReader.readLine();
-        }
-
-        int[] numbers = new int[numberVector.size()];
-        for (int i = 0, size = numberVector.size(); i < size; i++) {
-            numbers[i] = Integer.parseInt((String) numberVector.get(i));
-        }
         quicksort(numbers, 0, numbers.length - 1);
 
         Dictionary occurrences = new Hashtable();
-        for (int i = 0; i < numbers.length; i++) {
+        for (int i = 0, max = numbers.length; i < max; i++) {
             Integer key = new Integer(numbers[i]);
             Integer oldValue = (Integer) occurrences.get(key);
             int count = 1 + (oldValue == null ? 0 : oldValue.intValue());
@@ -29,10 +24,33 @@ public class Main {
 
         Enumeration enumeration = occurrences.keys();
         while (enumeration.hasMoreElements()) {
-            Integer key = (Integer) enumeration.nextElement();
-            Integer value = (Integer) occurrences.get(key);
+            Object key = enumeration.nextElement();
+            Object value = occurrences.get(key);
             System.out.println(key + "=" + value);
         }
+    }
+
+    private static int[] loadFile(String path) throws IOException {
+        Vector intVector = new Vector();
+        StringBuffer stringBuffer = new StringBuffer();
+        InputStream inputStream = new FileInputStream(new File(path));
+        while (inputStream.available() > 0) {
+            int b = inputStream.read();
+            if (b == '\n') {
+                if (stringBuffer.length() > 0) {
+                    intVector.addElement(stringBuffer.toString());
+                }
+                stringBuffer.setLength(0);
+            } else {
+                stringBuffer.append((char) b);
+            }
+        }
+
+        int[] ints = new int[intVector.size()];
+        for (int i = 0, max = ints.length; i < max; i++) {
+            ints[i] = Integer.parseInt((String) intVector.elementAt(i));
+        }
+        return ints;
     }
 
     private static void quicksort(int arr[], int left, int right) {
