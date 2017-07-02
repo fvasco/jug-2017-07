@@ -26,8 +26,8 @@ public class Main {
                 .map( e -> format( "%d=%d", e.getKey(), e.getValue() ) )
                 .forEach( System.out::println );
     }
-
-	public static List<Integer> quicksort(List<Integer> numbers) {
+    
+    public static List<Integer> quicksort(List<Integer> numbers) {
         if (numbers.size() < 2) { return numbers; }
 
         final int pivot = numbers.get(0);

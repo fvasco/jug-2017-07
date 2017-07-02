@@ -14,33 +14,33 @@ public class QuicksortTest {
 
     @Test
     public void emptyTest() {
-    	List<Integer> source = Collections.emptyList();
-		List<Integer> sorted = Main.quicksort( source );
-		
-		assertThat( sorted, is( Collections.emptyList() ) );
+        List<Integer> source = Collections.emptyList();
+        List<Integer> sorted = Main.quicksort( source );
+        
+        assertThat( sorted, is( Collections.emptyList() ) );
     }
     
     @Test
     public void singletonTest() {
-    	List<Integer> source = Arrays.asList( new Integer[]{1} );
-		List<Integer> sorted = Main.quicksort( source );
-		
-		assertThat( sorted, is( source ) );
+        List<Integer> source = Arrays.asList( new Integer[]{1} );
+        List<Integer> sorted = Main.quicksort( source );
+        
+        assertThat( sorted, is( source ) );
     }
     
     @Test
     public void variant1Test() {
-    	List<Integer> source = Arrays.asList( new Integer[]{7, 9, 0, 3, 4, 1, 5, 8, 2, 6} );
-		List<Integer> sorted = Main.quicksort( source );
-		
-		assertThat( sorted, is( source.stream().sorted().collect(toList()) ) );
+        List<Integer> source = Arrays.asList( new Integer[]{7, 9, 0, 3, 4, 1, 5, 8, 2, 6} );
+        List<Integer> sorted = Main.quicksort( source );
+        
+        assertThat( sorted, is( source.stream().sorted().collect(toList()) ) );
     }
     
     @Test
     public void repeated1Test() {
-    	List<Integer> source = Arrays.asList( new Integer[]{3, 2, 2, 3, 1, 3} );
-		List<Integer> sorted = Main.quicksort( source );
-		
-		assertThat( sorted, is( source.stream().sorted().collect(toList()) ) );
+        List<Integer> source = Arrays.asList( new Integer[]{3, 2, 2, 3, 1, 3} );
+        List<Integer> sorted = Main.quicksort( source );
+        
+        assertThat( sorted, is( source.stream().sorted().collect(toList()) ) );
     }
 }
