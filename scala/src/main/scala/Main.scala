@@ -7,16 +7,17 @@ object Main extends App {
 
     def occurrences: Map[T, Int] =
       t.foldLeft(empty[T, Int]) { (a, v) => a + a.get(v).fold(v -> 1)(x => v -> (x + 1)) }
+
+    def quickSort(implicit f: T => Ordered[T]): List[T] = t match {
+      case Nil => Nil
+      case head :: tail =>
+        val (lower, upper) = tail.partition(_ < head)
+        lower.quickSort ++ List(head) ++ upper.quickSort
+    }
   }
 
-  def quickSort(numbers: List[Int]): List[Int] = numbers match {
-    case Nil => Nil
-    case head :: tail =>
-      val (lower, upper) = tail.partition(_ < head)
-      quickSort(lower) ++ List(head) ++ quickSort(upper)
-  }
-
-  val numbers = fromResource("source").getLines.map(_.toInt).toList
-
-  quickSort(numbers).occurrences.foreach(x => println(s"${x._1}=${x._2}"))
+  fromResource("source").getLines.map(_.toInt).toList
+    .quickSort
+    .occurrences
+    .foreach(x => println(s"${x._1}=${x._2}"))
 }
