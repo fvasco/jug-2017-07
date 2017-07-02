@@ -14,13 +14,7 @@ public class Main {
 
         quicksort(numbers, 0, numbers.length - 1);
 
-        Dictionary occurrences = new Hashtable();
-        for (int i = 0, max = numbers.length; i < max; i++) {
-            Integer key = new Integer(numbers[i]);
-            Integer oldValue = (Integer) occurrences.get(key);
-            int count = 1 + (oldValue == null ? 0 : oldValue.intValue());
-            occurrences.put(key, new Integer(count));
-        }
+        Dictionary occurrences = occurrences(numbers);
 
         Enumeration enumeration = occurrences.keys();
         while (enumeration.hasMoreElements()) {
@@ -81,5 +75,21 @@ public class Main {
             }
         }
         return i;
+    }
+
+    private static Dictionary occurrences(int[] orderedNumbers) {
+        Dictionary occurrences = new Hashtable();
+        if (orderedNumbers.length > 0) {
+            int i = 0;
+            while (i < orderedNumbers.length) {
+                int number = orderedNumbers[i];
+                int count = 1;
+                while (++i < orderedNumbers.length && number == orderedNumbers[i]) {
+                    count++;
+                }
+                occurrences.put(new Integer(number), new Integer(count));
+            }
+        }
+        return occurrences;
     }
 }
