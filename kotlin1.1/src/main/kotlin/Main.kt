@@ -3,6 +3,9 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
+import java.util.function.Function.identity
+import java.util.stream.Collectors.counting
+import java.util.stream.Collectors.groupingBy
 
 fun main(vararg args: String) = runBlocking {
     val numbers = File("../source")
@@ -11,11 +14,8 @@ fun main(vararg args: String) = runBlocking {
 
     val ordered = quicksortAsync(numbers).await()
 
-    val occurrences = ordered
-            .fold(emptyMap<Int, Int>()) { acc, i ->
-                val count = 1 + (acc[i] ?: 0)
-                acc + mapOf(i to count)
-            }
+    val occurrences = ordered.stream()
+            .collect(groupingBy(identity<Int>(), counting()))
 
     occurrences.forEach(::println)
 }
