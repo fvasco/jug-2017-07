@@ -22,7 +22,8 @@ BEGIN
   WHILE NOT Eof(f) DO BEGIN
     tot := tot+1;
     READLN(f, numbers[tot]);
-  END
+  END;
+  Close(f)
 END;
 
 PROCEDURE Partition(VAR numbers:vector; l,u:index; VAR j,i:index);
