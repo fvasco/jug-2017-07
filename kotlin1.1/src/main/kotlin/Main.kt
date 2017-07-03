@@ -20,13 +20,10 @@ fun main(vararg args: String) = runBlocking {
     occurrences.forEach(::println)
 }
 
-suspend fun <T : Comparable<T>> quicksortAsync(list: List<T>): Deferred<List<T>> =
-        async(CommonPool) {
-            if (list.size <= 1) return@async list
-
-            val pivot = list.first()
-            val (smaller, greater) = list.drop(1).partition { it <= pivot }
-            val smallerDeferred = quicksortAsync(smaller)
-            val greaterDeferred = quicksortAsync(greater)
-            return@async smallerDeferred.await() + pivot + greaterDeferred.await()
-        }
+suspend fun <T : Comparable<T>> quicksortAsync(list: List<T>): Deferred<List<T>> = async(CommonPool) {
+    val pivot = list.firstOrNull() ?: return@async list
+    val (smaller, greater) = list.drop(1)
+            .partition { it <= pivot }.toList()
+            .map { quicksortAsync(it) }
+    return@async smaller.await() + pivot + greater.await()
+}
