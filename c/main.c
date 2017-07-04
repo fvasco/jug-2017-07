@@ -11,8 +11,8 @@ typedef int vector[MAXSIZE];
 typedef int occType[MAXVAL];
 
 void loadData(char *filename, vector numbers, index *pTot);
-void partition(vector numbers, index low, index up, index *pj, index *pi);
-void quickSort(vector numbers, index low, index high);
+index partition(vector arr, index left, index right);
+void quickSort(vector arr, index left, index right);
 void countOccurrences(vector numbers, index tot, occType occurrences);
 void printOccurrences(occType occurrences);
 
@@ -38,43 +38,34 @@ void loadData(char *filename, vector numbers, index *pTot) {
 	fclose(fp);
 }
 
-void partition(vector numbers, index low, index up, index *pj, index *pi) {
-	elem t,pivot;
-	index pivotIndex;
-
-	pivotIndex = (low+up)/2;
-	pivot = numbers[pivotIndex];
-	*pi = low;
-	*pj = up;
-	while (numbers[*pi] < pivot) (*pi)++;
-	while (numbers[*pj] > pivot) (*pj)--;
-	while (*pi < (*pj)-1) {
-		t = numbers[*pi]; numbers[*pi] = numbers[*pj]; numbers[*pj] = t;
-		(*pi)++;
-		(*pj)--;
-		while (numbers[*pi] < pivot) (*pi)++;
-		while (numbers[*pj] > pivot) (*pj)--;
-	}
-	if (*pi <= *pj) {
-		if (*pi < *pj) { t = numbers[*pi]; numbers[*pi] = numbers[*pj]; numbers[*pj] = t; }
-		(*pi)++;
-		(*pj)--;
-	}
+void quickSort(vector arr, index left, index right) {
+        index index = partition(arr, left, right);
+        if (left < index - 1)
+            quickSort(arr, left, index - 1);
+        if (index < right)
+            quickSort(arr, index, right);
 }
 
-void quickSort(vector numbers, index low, index high) {
-	index lower, higher;
+index partition(vector arr, index left, index right) {
+        index i = left, j = right;
+        elem pivot = arr[(left + right) / 2];
 
-	if (low < high) {
-		partition(numbers, low, high, &lower, &higher);
-		if (lower-low < high-higher) {
-			quickSort(numbers, low, lower);
-			quickSort(numbers, higher, high);
-		} else {
-			quickSort(numbers, higher, high);
-			quickSort(numbers, low, lower);
-		}
-	}
+        while (i <= j) {
+            while (arr[i] < pivot)
+                i++;
+
+            while (arr[j] > pivot)
+                j--;
+
+            if (i <= j) {
+                elem tmp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+        return i;
 }
 
 void countOccurrences(vector numbers, index tot, occType occurrences) {
