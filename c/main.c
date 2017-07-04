@@ -70,6 +70,7 @@ index partition(vector arr, index left, index right) {
 
 void countOccurrences(vector numbers, index tot, occType occurrences) {
 	index i;
+	for (i=0; i<MAXVAL; ++i) occurrences[i] = 0;
 	for (i=0; i<tot; ++i) occurrences[numbers[i]]++;
 }
 
